@@ -1,0 +1,24 @@
+<div class="center">
+    <file-drop headertext="Drop files here" (onFileDrop)="dropped($event)"
+    (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)">
+        <span>optional content (don't set headertext then)</span>
+    </file-drop>
+    <div class="upload-table">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>size</th>
+                    <th>Last Date Modified</th>
+                </tr>
+            </thead>
+            <tbody class="upload-name-style">
+                <tr *ngFor="let item of archivos; let i=index">
+                    <td><strong>{{ item.name }}</strong></td>
+                    <td><strong>{{ item.size }}</strong></td>
+                    <td><strong>{{ item.lastModifiedDate }}</strong></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
