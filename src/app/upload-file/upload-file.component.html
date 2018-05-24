@@ -1,6 +1,16 @@
+<div class="" >
+    <form class="topBefore" action="">
+        <input [(ngModel)]="miPersona.nombre" name="nombre" placeholder="Nombre">
+        <br>
+        <input [(ngModel)]="miPersona.email" name="email" placeholder="E-mail">
+        <br>
+        <input type="password" [(ngModel)]="miPersona.password" name="edad" placeholder="password">
+        <br>
+        <input [(ngModel)]="miPersona.sexo" name="sexo" placeholder="Sexo" value="1">
+    </form>
+</div>
 <div class="center">
-    <file-drop headertext="Drop files here" (onFileDrop)="dropped($event)"
-    (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)">
+    <file-drop headertext="Drop files here" (onFileDrop)="dropped($event)" (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)">
         <span>optional content (don't set headertext then)</span>
     </file-drop>
     <div class="upload-table">

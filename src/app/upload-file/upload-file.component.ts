@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Http, Headers,Response,RequestOptions } from '@angular/http';
 import { UploadEvent, UploadFile, FileSystemFileEntry, FileSystemDirectoryEntry } from 'ngx-file-drop';
+import { Persona } from '../clases/persona';
 
 @Component({
   selector: 'app-upload-file',
@@ -9,54 +10,45 @@ import { UploadEvent, UploadFile, FileSystemFileEntry, FileSystemDirectoryEntry 
 })
 export class UploadFileComponent implements OnInit {
 
-  constructor( public http: Http ) { }
+    miPersona = new Persona("","","","");
+    public files: UploadFile[] = [];
+    public archivos : Array<any>;
 
-  ngOnInit() {
-  }
+    constructor( public http: Http ) { }
 
-
-
-  public files: UploadFile[] = [];
-  public archivos : Array<any>;
+    ngOnInit() {}
 
     public dropped(event: UploadEvent) {
-      this.files = event.files;
+        this.files = event.files;
 
-      for (const droppedFile of event.files) {
+        for (const droppedFile of event.files) {
 
-        // Is it a file?
-        if (droppedFile.fileEntry.isFile) {
-            const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
+            // Is it a file?
+            if (droppedFile.fileEntry.isFile && this.verificarPersona() ) {
 
+                const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
 
-            fileEntry.file((file: File) => {
+                fileEntry.file((file: File) => {
+                // You could upload it like this:
+                const formData = new FormData()
+                formData.append('nombre', this.miPersona.nombre );
+                formData.append('email', this.miPersona.email );
+                formData.append('password', this.miPersona.password );
+                formData.append('sexo', this.miPersona.sexo );
+                formData.append('foto', file, droppedFile.relativePath);
 
-            // Here you can access the real file
-            //console.log(droppedFile.relativePath, file);
-
-
-            // You could upload it like this:
-            const formData = new FormData()
-            formData.append('foto', file, droppedFile.relativePath);
-            /**
-            // Headers
-            const headers = new HttpHeaders({
-              'security-token': 'mytoken'
-            })
-            */
-            this.http.post('https://localhost:8080/archivo/', formData)
-            .subscribe(data => {
-              // Sanitized logo returned from backend
-            })
-
-
-          });
-        } else {
-          // It was a directory (empty directories are added, otherwise only files)
-          const fileEntry = droppedFile.fileEntry as FileSystemDirectoryEntry;
-          console.log(droppedFile.relativePath, fileEntry);
+                console.log( JSON.stringify(this.miPersona) );
+                /** const headers = new HttpHeaders({'security-token': 'mytoken'}) */
+                this.http.post('http://localhost:8080/archivo/', formData).subscribe(data => {
+                    console.log(data);
+                })
+              });
+            } else {
+              // It was a directory (empty directories are added, otherwise only files)
+              const fileEntry = droppedFile.fileEntry as FileSystemDirectoryEntry;
+              console.log(droppedFile.relativePath, fileEntry);
+            }
         }
-      }
     }
 
     public fileOver(event){
@@ -65,6 +57,15 @@ export class UploadFileComponent implements OnInit {
 
     public fileLeave(event){
       //console.log(event);
+    }
+
+    private verificarPersona()
+    {
+        if(this.miPersona.nombre == "" || this.miPersona.email == "" || this.miPersona.password == ""){
+            console.log("Falta cargar datos ");
+            return  false;
+        }
+        return true;
     }
 
 
